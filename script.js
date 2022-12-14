@@ -1,4 +1,20 @@
 const inquirer = require('inquirer');
+const mysql = require('mysql2');
+const addEmployee = require('./add_employee');
+
+const db = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: 'ryanbelcher',
+        database: 'roster_db'
+    },
+    console.log('Connect to the roster_db database.')
+);
+
+const introduction = () => {
+    console.log()
+}
 
 const chooseOption = () => {
     inquirer.prompt(
@@ -11,6 +27,12 @@ const chooseOption = () => {
             }
         ]
     )
+        .then(
+
+    )
 };
 
+
+
+introduction();
 chooseOption();
