@@ -9,7 +9,7 @@ CREATE TABLE department (
     PRIMARY KEY(id)
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
     id INT NOT NULL,
     tile VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE employee (
     manager_id INT,
     PRIMARY KEY(id),
     FOREIGN KEY (role_id)
-    REFERENCES role(id)
+    REFERENCES roles(id)
     ON DELETE SET NULL,
 );
 
