@@ -4,7 +4,8 @@ VALUES (001, 'Management')
 (003, 'Accounting'),
 (004, 'Customer Service'),
 (005, 'Quality Assurance'),
-(006, 'Warehouse');
+(006, 'Customer Relations')
+(007, 'Warehouse');
 
 INSERT INTO roles (id, title, salary, department_id)
 VALUES (001, 'Regional Manager', 90000, 001),
@@ -15,7 +16,7 @@ VALUES (001, 'Regional Manager', 90000, 001),
 (006, 'Accountant', 70000, 003),
 (007, 'Customer Service Rep', 65000, 004),
 (008, 'QA Analyst', 70000, 005),
-(009, 'Customer Relations' 67500, 006)
+(009, 'Customer Relations Associate' 67500, 006)
 (010, 'Warehouse Foreman', 95000, 007),
 (011, 'Warehouse Associate', 60000, 007);
 

@@ -1,6 +1,8 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const addEmployee = require('./add_employee');
+const addEmployee = require('./Prompts/add_employee');
+const addRole = require('./Prompts/add_role');
+const addDepartment = require('./Prompts/add_departments')
 
 const db = mysql.createConnection(
     {
