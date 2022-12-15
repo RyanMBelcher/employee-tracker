@@ -1,8 +1,9 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const chooseOption = require('./Prompts/choose_option');
 const addEmployee = require('./Prompts/add_employee');
 const addRole = require('./Prompts/add_role');
-const addDepartment = require('./Prompts/add_departments')
+const addDepartment = require('./Prompts/add_departments');
 
 const db = mysql.createConnection(
     {
@@ -18,23 +19,42 @@ const introduction = () => {
     console.log()
 }
 
-const chooseOption = () => {
-    inquirer.prompt(
-        [
-            {
-                type: 'list',
-                message: 'What would you like to do?',
-                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
-                name: 'optionList'
-            }
-        ]
-    )
-        .then(
-
-    )
+function init() {
+    inquirer.prompt(chooseOption).then(data) => {
+        const action = data.action
+        switch (action) {
+            case 'View All Employees':
+                viewAllEmployees();
+                break;
+            case 'Add Employee':
+                addEmployee();
+                break;
+            case 'Update Employee Role':
+                updateEmployeeRole();
+                break;
+            case 'View All Roles':
+                viewAllRoles();
+                break;
+            case 'Add Role':
+                addRole();
+                break;
+            case 'View All Departments':
+                viewAllDepartments();
+                break;
+            case 'Add Department':
+                addDepartment();
+                break;
+            case 'Quit':
+                quit();
+                break;
+        }
+    }
 };
 
+const viewAllEmployees = () => {
+    db.query('SELECT * FROM employee', function (err, results) {
+        err ? console.log(err) : console.table(results)
+    })
+}
 
-
-introduction();
-chooseOption();
+init();
