@@ -1,4 +1,4 @@
-const addRole =
+const addRole = (departments) =>
     [
         {
             type: 'input',
@@ -13,7 +13,7 @@ const addRole =
         {
             type: 'list',
             message: 'What department does the role belong to?',
-            choices: ['Management', 'Sales', 'Accounting', 'Customer Service', 'Quality Assurance', 'Customer Relations', 'Warehouse'],
+            choices: departments.map((department) => ({ name: department.name, value: department.id })),
             name: 'roleDepartment'
         }
     ]

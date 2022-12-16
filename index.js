@@ -6,6 +6,7 @@ const addEmployeePrompt = require('./Prompts/add_employee');
 const addRolePrompt = require('./Prompts/add_role');
 const addDepartmentPrompt = require('./Prompts/add_departments');
 const updateEmployeeRolePrompt = require('./Prompts/update_employee');
+const { before } = require('node:test');
 
 const db = mysql.createConnection(
     {
@@ -98,25 +99,6 @@ const viewAllDepartments = () => {
 
 // };
 
-// const addEmployee = () => {
-//     db.query('SELECT * FROM role', (err, results) => {
-//         if (err) {
-//             console.log(err)
-//             return err
-//         } console.table(results);
-//     })
-//     inquirer
-//         .prompt(addEmployeePrompt)
-//         .then((data) => {
-//             db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)'), data.firstName, data.lastName, data.employeeRole, data.employeeManager, function (err, results) {
-//                 err ? console.log(err) : console.log(results);
-//             };
-//             setTimeout(() => {
-//                 init();
-//             }, 1000)
-//     )}
-// };
-
 const addEmployee = async () => {
     const results = await db.promise().query('SELECT * FROM roles')
     // console.log(results[0]);
@@ -135,13 +117,20 @@ const addEmployee = async () => {
 };
 
 
-// const addRole = () => {
-
-//     inquirer
-//     .prompt(addRolePrompt)
-//     .then()
-// db.query('INSERT INTO (role title, salary, department_id) VALUES (?, ?, ?)')
-// };
+const addRole = async () => {
+    const results = await db.promise().query('SELECT * FROM department')
+    const departments = results[0];
+    // console.log(results[0]);
+    inquirer
+        .prompt(addRolePrompt(departments))
+        .then((data) => {
+            // console.log(data);
+            db.query('INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)',
+                [data.roleName, data.roleSalary, data.roleDepartment], function (err, results) {
+                    err ? console.log(err) : console.log(results);
+                });
+        });
+};
 
 const addDepartment = () => {
     inquirer
