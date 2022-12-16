@@ -1,4 +1,4 @@
-const addEmployee =
+const addEmployee = (roles, managers) =>
     [
         {
             type: 'input',
@@ -13,15 +13,13 @@ const addEmployee =
         {
             type: 'list',
             message: `What is the employee's role?`,
-            choices: ['Regional Manager', 'Assistant to the Regional Manager', 'Sales Lead', 'Salesperson',
-                'Junior Salesperson', 'Accountant', 'Customer Service Rep', 'QA Analyst', 'Customer Relations',
-                'Warehouse Foreman', 'Warehouse Associate'],
+            choices: roles.map((role) => ({ name: role.title, value: role.id })),
             name: 'employeeRole'
         },
         {
             type: 'list',
             message: `Who is the employee's manager?`,
-            choices: ['Michael Scott', 'Darryl Philbin', 'Null'],
+            choices: managers.map((manager) => ({ name: manager.first_name, value: manager.id })),
             name: 'employeeManager'
         }
     ]
