@@ -3,7 +3,8 @@ const mysql = require('mysql2');
 const chooseOption = require('./Prompts/choose_option');
 const addEmployee = require('./Prompts/add_employee');
 const addRole = require('./Prompts/add_role');
-const addDepartment = require('./Prompts/add_departments');
+const addDepartmentPrompt = require('./Prompts/add_departments');
+const updateEmployeeRolePrompt = require('./Prompts/update_employee');
 
 const db = mysql.createConnection(
     {
@@ -57,18 +58,68 @@ const viewAllEmployees = () => {
     db.query('SELECT * FROM employee', function (err, results) {
         err ? console.log(err) : console.table(results);
     });
-}
+    setTimeout(() => {
+        init();
+    }, 1000)
+
+};
 
 const viewAllRoles = () => {
     db.query('SELECT * FROM roles', function (err, results) {
         err ? console.log(err) : console.table(results);
     });
-}
+    setTimeout(() => {
+        init();
+    }, 1000)
+};
 
 const viewAllDepartments = () => {
     db.query('SELECT * FROM department', function (err, results) {
         err ? console.log(err) : console.table(results);
     });
-}
+    setTimeout(() => {
+        init();
+    }, 1000)
+};
+
+// const updateEmployeeRole = () => {
+//     db.query('SELECT * FROM employee', function (err, results) {
+//         err ? console.log(err) : console.log(results);
+//         const employeeNames = results.map(value => `${value.first_name} ${value.last_name}`)
+//         updateEmployeeRolePrompt[0].choices = employeeNames;
+//         inquirer
+//             .prompt(updateEmployeeRolePrompt)
+//             .then(response => {
+//                 db.query('UPDATE employee SET role_id = ? WHERE   = ? ')
+//             })
+
+//     });
+
+// };
+
+// const addEmployee = () => {
+//     inquirer
+//     .prompt(addEmployee)
+//     .then
+// };
+
+// const addRole = () {
+//     inquirer
+//     .prompt(addRole)
+// };
+
+const addDepartment = () => {
+    inquirer
+        .prompt(addDepartmentPrompt)
+        .then((data) => {
+            db.query('INSERT INTO department (name) VALUES (?)', data.departmentName, function (err, results) {
+                err ? console.log(err) : console.log(results);
+            });
+            setTimeout(() => {
+                init();
+            }, 1000)
+        }
+        )
+};
 
 init();
