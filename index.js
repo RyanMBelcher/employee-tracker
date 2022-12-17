@@ -1,12 +1,13 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const ctable = require('console.table');
+const chalk = require('chalk');
 const chooseOption = require('./Prompts/choose_option');
 const addEmployeePrompt = require('./Prompts/add_employee');
 const addRolePrompt = require('./Prompts/add_role');
 const addDepartmentPrompt = require('./Prompts/add_departments');
-const updateEmployeeRolePrompt = require('./Prompts/update_employee');
-const { before } = require('node:test');
+const updateEmployeePrompt = require('./Prompts/update_employee');
+
 
 const db = mysql.createConnection(
     {
@@ -15,7 +16,7 @@ const db = mysql.createConnection(
         password: 'ryanbelcher',
         database: 'roster_db'
     },
-    console.log('Connected to the roster_db database.')
+    console.log(chalk.blue('Connected to the roster_db database.'))
 );
 
 // const introduction = () => {
@@ -34,7 +35,7 @@ function init() {
                     addEmployee();
                     break;
                 case 'Update Employee Role':
-                    updateEmployeeRole();
+                    updateEmployee();
                     break;
                 case 'View All Roles':
                     viewAllRoles();
@@ -57,7 +58,7 @@ function init() {
 };
 
 const viewAllEmployees = () => {
-    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name, roles.salary, employee.manager_id FROM employee JOIN roles ON employee.role_id = roles.id JOIN department ON department.id = roles.department_id', function (err, results) {
+    db.query('SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name AS department, roles.salary, IF(employee.manager_id IS NOT NULL, CONCAT(manager.first_name, " ",  manager.last_name ), NULL) AS manager_name FROM employee JOIN roles ON employee.role_id = roles.id JOIN department ON department.id = roles.department_id LEFT JOIN employee manager ON employee.manager_id = manager.id ORDER BY employee.id ', function (err, results) {
         err ? console.log(err) : console.table(results);
     });
     setTimeout(() => {
@@ -67,7 +68,7 @@ const viewAllEmployees = () => {
 };
 
 const viewAllRoles = () => {
-    db.query('SELECT roles.id AS ID, roles.title as Title, department.name AS Department, roles.salary AS Salary FROM roles JOIN department ON roles.department_id = department.id', function (err, results) {
+    db.query('SELECT roles.id AS ID, roles.title as Title, department.name AS Department, roles.salary AS Salary FROM roles JOIN department ON roles.department_id = department.id ORDER BY roles.id', function (err, results) {
         err ? console.log(err) : console.table(results);
     });
     setTimeout(() => {
@@ -76,7 +77,7 @@ const viewAllRoles = () => {
 };
 
 const viewAllDepartments = () => {
-    db.query('SELECT * FROM department', function (err, results) {
+    db.query('SELECT * FROM department ORDER BY department.id', function (err, results) {
         err ? console.log(err) : console.table(results);
     });
     setTimeout(() => {
@@ -84,19 +85,20 @@ const viewAllDepartments = () => {
     }, 2000)
 };
 
-// const updateEmployeeRole = () => {
-//     db.query('SELECT * FROM employee', function (err, results) {
-//         err ? console.log(err) : console.log(results);
-//         const employeeNames = results.map(value => `${value.first_name} ${value.last_name}`)
-//         updateEmployeeRolePrompt[0].choices = employeeNames;
-//         inquirer
-//             .prompt(updateEmployeeRolePrompt)
-//             .then(response => {
-//                 db.query('UPDATE employee SET role_id = ? WHERE   = ? ')
-//             })
-
-//     });
-
+// const updateEmployee = async () => {
+//     const results = await db.promise().query('SELECT * FROM employee')
+//     const employee = results[0]
+//     const resultsTwo = await db.promise().query('SELECT * FROM roles')
+//     const role = resultsTwo[0]
+//     console.log(results[0]);
+//     inquirer
+//         .prompt(updateEmployeePrompt(employee, role))
+//         .then(data => {
+//             console.log(data);
+//             db.query('UPDATE employee SET id = ? WHERE role_id = ?', [data.employeeUpdate, data.roleUpdate], function (err, results) {
+//                 err ? console.table(err) : console.log(results)
+//             });
+//         });
 // };
 
 const addEmployee = async () => {

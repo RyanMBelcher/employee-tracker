@@ -19,7 +19,7 @@ const addEmployee = (roles, managers) =>
         {
             type: 'list',
             message: `Who is the employee's manager?`,
-            choices: managers.map((manager) => ({ name: manager.first_name, value: manager.id })),
+            choices: managers.map((manager) => ({ name: `${manager.first_name} ${manager.last_name}`, value: manager.id })),
             name: 'employeeManager'
         }
     ]
