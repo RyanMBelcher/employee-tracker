@@ -20,7 +20,7 @@ const db = mysql.createConnection(
 );
 
 const introduction = () => {
-    console.log(chalk.greenBright(`
+    console.log(chalk.redBright(`
 
 ------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ function init() {
                     addDepartment();
                     break;
                 case 'Quit':
-                    quit();
+                    console.clear();
                     break;
             }
         }
@@ -115,13 +115,12 @@ const updateEmployee = async () => {
     const employee = results[0]
     const resultsTwo = await db.promise().query('SELECT * FROM roles')
     const role = resultsTwo[0]
-    console.log(results[0]);
     inquirer
         .prompt(updateEmployeePrompt(employee, role))
         .then(data => {
             console.log(data);
             db.query('UPDATE employee SET role_id = ? WHERE id = ?', [data.roleUpdate, data.employeeUpdate], function (err, results) {
-                err ? console.table(err) : console.table(results)
+                err ? console.table(err) : console.log(chalk.greenBright('Employee updated successfully!'))
             });
             setTimeout(() => {
                 init()
@@ -131,7 +130,6 @@ const updateEmployee = async () => {
 
 const addEmployee = async () => {
     const results = await db.promise().query('SELECT * FROM roles')
-    // console.log(results[0]);
     const roles = results[0];
     const resultsTwo = await db.promise().query('SELECT * FROM employee WHERE manager_id IS NULL')
     const managers = resultsTwo[0];
@@ -141,7 +139,7 @@ const addEmployee = async () => {
             console.log(data)
             db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
                 [data.firstName, data.lastName, data.employeeRole, data.employeeManager], function (err, results) {
-                    err ? console.table(err) : console.table(results)
+                    err ? console.table(err) : console.log(chalk.greenBright('Employee added successfully'))
                 });
             setTimeout(() => {
                 init()
@@ -149,18 +147,15 @@ const addEmployee = async () => {
         });
 };
 
-
 const addRole = async () => {
     const results = await db.promise().query('SELECT * FROM department')
     const departments = results[0];
-    // console.log(results[0]);
     inquirer
         .prompt(addRolePrompt(departments))
         .then((data) => {
-            // console.log(data);
             db.query('INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)',
                 [data.roleName, data.roleSalary, data.roleDepartment], function (err, results) {
-                    err ? console.log(err) : console.table(results);
+                    err ? console.log(err) : console.log(chalk.greenBright('Role added successfully!'));
                 });
             setTimeout(() => {
                 init()
@@ -173,7 +168,7 @@ const addDepartment = () => {
         .prompt(addDepartmentPrompt)
         .then((data) => {
             db.query('INSERT INTO department (name) VALUES (?)', data.departmentName, function (err, results) {
-                err ? console.log(err) : console.table(results);
+                err ? console.log(err) : console.log(chalk.greenBright('Department added successfully'));
             });
             setTimeout(() => {
                 init();
