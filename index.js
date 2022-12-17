@@ -19,9 +19,34 @@ const db = mysql.createConnection(
     console.log(chalk.blue('Connected to the roster_db database.'))
 );
 
-// const introduction = () => {
-//     console.log()
-// }
+const introduction = () => {
+    console.log(chalk.greenBright(`
+
+------------------------------------------------------------------------------
+
+$$$$$$$$|                         $$|                                        
+$$  _____|                        $$ |                                        
+$$ |      $$$$$$|$$$$|   $$$$$$$  $$ | $$$$$$$  $$|  $$|  $$$$$$|   $$$$$$|  
+$$$$$|    $$  _$$  _$$| $$  __$$| $$ |$$  __$$| $$ |  $$ |$$  __$$| $$  __$$| 
+$$  __|   $$ / $$ / $$ |$$ /  $$ |$$ |$$ /  $$ |$$ |  $$ |$$$$$$$$ |$$$$$$$$ |
+$$ |      $$ | $$ | $$ |$$ |  $$ |$$ |$$ |  $$ |$$ |  $$ |$$   ____|$$   ____|
+$$$$$$$$$ $$ | $$ | $$ |$$$$$$$  |$$ ||$$$$$$  ||$$$$$$$ ||$$$$$$$$ |$$$$$$$$ 
+|________||__| |__| |__|$$  ____/ |__| |______/  |____$$ | |_______| |_______|
+                        $$ |                    $$$   $$ |                    
+                        $$ |                    |$$$$$$  |                    
+                        |__|                     |______/                     
+$$$$$$$$| $$$$$$$|   $$$$$$|   $$$$$$|  $$$   $$| $$$$$$$$| $$$$$$$|          
+|__$$  __|$$  __$$| $$  __$$| $$  __$$$ $$ | $$  |$$  _____|$$  __$$|         
+   $$ |   $$ |  $$ |$$ /  $$ |$$ /  |__|$$ |$$  / $$ |      $$ |  $$ |        
+   $$ |   $$$$$$$  |$$$$$$$$ |$$ |      $$$$$  /  $$$$$|    $$$$$$$  |        
+   $$ |   $$  __$$< $$  __$$ |$$ |      $$  $$<   $$  __|   $$  __$$<         
+   $$ |   $$ |  $$ |$$ |  $$ |$$ |  $$$ $$ ||$$|  $$ |      $$ |  $$ |        
+   $$ |   $$ |  $$ |$$ |  $$ |$$$$$$$  |$$ | |$$| $$$$$$$$| $$ |  $$ |        
+   |__|   |__|  |__||__|  |__| |______/ |__|  |__||________||__|  |__|   
+
+-------------------------------------------------------------------------------   
+   `))
+}
 
 function init() {
     inquirer
@@ -85,21 +110,24 @@ const viewAllDepartments = () => {
     }, 2000)
 };
 
-// const updateEmployee = async () => {
-//     const results = await db.promise().query('SELECT * FROM employee')
-//     const employee = results[0]
-//     const resultsTwo = await db.promise().query('SELECT * FROM roles')
-//     const role = resultsTwo[0]
-//     console.log(results[0]);
-//     inquirer
-//         .prompt(updateEmployeePrompt(employee, role))
-//         .then(data => {
-//             console.log(data);
-//             db.query('UPDATE employee SET id = ? WHERE role_id = ?', [data.employeeUpdate, data.roleUpdate], function (err, results) {
-//                 err ? console.table(err) : console.log(results)
-//             });
-//         });
-// };
+const updateEmployee = async () => {
+    const results = await db.promise().query('SELECT * FROM employee')
+    const employee = results[0]
+    const resultsTwo = await db.promise().query('SELECT * FROM roles')
+    const role = resultsTwo[0]
+    console.log(results[0]);
+    inquirer
+        .prompt(updateEmployeePrompt(employee, role))
+        .then(data => {
+            console.log(data);
+            db.query('UPDATE employee SET role_id = ? WHERE id = ?', [data.roleUpdate, data.employeeUpdate], function (err, results) {
+                err ? console.table(err) : console.table(results)
+            });
+            setTimeout(() => {
+                init()
+            }, 2000)
+        });
+};
 
 const addEmployee = async () => {
     const results = await db.promise().query('SELECT * FROM roles')
@@ -113,8 +141,11 @@ const addEmployee = async () => {
             console.log(data)
             db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
                 [data.firstName, data.lastName, data.employeeRole, data.employeeManager], function (err, results) {
-                    err ? console.table(err) : console.log(results)
+                    err ? console.table(err) : console.table(results)
                 });
+            setTimeout(() => {
+                init()
+            }, 2000)
         });
 };
 
@@ -129,8 +160,11 @@ const addRole = async () => {
             // console.log(data);
             db.query('INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)',
                 [data.roleName, data.roleSalary, data.roleDepartment], function (err, results) {
-                    err ? console.log(err) : console.log(results);
+                    err ? console.log(err) : console.table(results);
                 });
+            setTimeout(() => {
+                init()
+            }, 2000)
         });
 };
 
@@ -139,7 +173,7 @@ const addDepartment = () => {
         .prompt(addDepartmentPrompt)
         .then((data) => {
             db.query('INSERT INTO department (name) VALUES (?)', data.departmentName, function (err, results) {
-                err ? console.log(err) : console.log(results);
+                err ? console.log(err) : console.table(results);
             });
             setTimeout(() => {
                 init();
@@ -148,4 +182,5 @@ const addDepartment = () => {
         )
 };
 
+introduction();
 init();
